@@ -281,7 +281,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 	}
 
 	/* Added endpoint to send dashboard data from plugin to the saas appwplp server */
-	public function wplp_send_data_to_dashboard_appwplp_server(WP_REST_Request $request  ){		
+	public function wplp_send_data_to_dashboard_appwplp_server(WP_REST_Request $request  ){
 		$current_user = wp_get_current_user();
 		$client_site_name = get_bloginfo('name');
 		
@@ -330,6 +330,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching	
 
 	$titles = array_column($pagesresult, 'post_title');
+	$policy_preview = get_option('policy_preview', array(-1, -1, -1, -1));
 
 		return rest_ensure_response(
 			array(
@@ -340,6 +341,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				'legal_pages_published'			   => $count,
 				'page_results'					   => $titles,
 				'client_site_name'				   => $client_site_name,
+				'policy_preview'				   => $policy_preview,
 			)
 		);
 	}

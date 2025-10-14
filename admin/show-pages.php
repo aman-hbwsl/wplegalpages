@@ -86,6 +86,8 @@ $current_page = isset( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_
 		$postmeta_tbl = $wpdb->prefix . 'postmeta';
 		$pagesresult  = $wpdb->get_results( $wpdb->prepare( 'SELECT ptbl.* FROM ' . $post_tbl . ' as ptbl , ' . $postmeta_tbl . ' as pmtbl WHERE ptbl.ID = pmtbl.post_id and ptbl.post_status = %s AND pmtbl.meta_key = %s', array( 'publish', 'is_legal' ) ) ); // phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.DirectDatabaseQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 
+		$policy_preview = array();
+
 	if ( $pagesresult ) {
 		$nonce    = wp_create_nonce( 'my-nonce' );
 		$count    = 1;
@@ -109,6 +111,29 @@ $current_page = isset( $_REQUEST['page'] ) ? sanitize_text_field( wp_unslash( $_
 			</tr>
 				<?php
 				$count++;
+
+				$policy_preview[] = array(
+					'name'    		=> $res->post_title,
+					'last_update' 	=> gmdate( 'Y/m/d', strtotime( $res->post_date ) ),
+					'image_key'   	=> $res->post_name,
+					'content' 		=> $res->post_content,
+				);
+		}
+
+		// Sort the array by 'last_update' in descending order (newest first)
+		usort( $policy_preview, function( $a, $b ) {
+		    $dateA = strtotime( $a['last_update'] ?? '' );
+		    $dateB = strtotime( $b['last_update'] ?? '' );
+		    return $dateB <=> $dateA; // descending order
+		});
+
+		// Keep only the 5 most recent entries
+		$policy_preview = array_slice( $policy_preview, 0, 5 );
+
+		if ( get_option( 'policy_preview' ) === false ) {
+		    add_option( 'policy_preview', $policy_preview );
+		} else {
+		    update_option( 'policy_preview', $policy_preview );
 		}
 		?>
 
