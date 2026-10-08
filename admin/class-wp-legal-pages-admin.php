@@ -1225,6 +1225,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			'disclosingParty'	=> $lp_general['disclosing-party'],
 			'recipientParty'	=> $lp_general['recipient-party'],
 			'last_updated'	    => $lp_general['last_updated'] ?? '',
+			'legal_form'		=> $lp_general['legal_form'] ?? '',
+			'representatives'	=> $lp_general['representatives'] ?? '',
+			'registration_no'	=> $lp_general['registration_no'] ?? '',
+			'reg_authority'		=> $lp_general['reg_authority'] ?? '',
+			'vat_id'			=> $lp_general['vat_id'] ?? ''
 		);
 
 		$advanced_info[] = array(
@@ -3143,6 +3148,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				$options_object = array(
 					'lp_options'               => $lp_options,
 					'page_options'             => $options,
+					'legal_form_options'	   => $this->get_legal_form_options(),
 					'lp_footer_options'        => $lp_footer_options,
 					'ajaxurl'                  => admin_url( 'admin-ajax.php' ),
 					'number_of_days'           => range( 1, 30 ),
@@ -3173,6 +3179,35 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			}
 		}
 
+		public function get_legal_form_options() {
+			$legal_form_options = array(
+				array(
+					'label' => __( 'Sole trader/Individual', 'wplegalpages' ),
+					'code'  => 'sole_trader',
+				),
+				array(
+					'label' => __( 'Partnership', 'wplegalpages' ),
+					'code'  => 'partnership',
+				),
+				array(
+					'label' => __( 'Private Limited Company', 'wplegalpages' ),
+					'code'  => 'private_limited',
+				),
+				array(
+					'label' => __( 'Public Limited Company', 'wplegalpages' ),
+					'code'  => 'public_limited',
+				),
+				array(
+					'label' => __( 'Non-profit or association', 'wplegalpages' ),
+					'code'  => 'non_profit',
+				),
+				array(
+					'label' => __( 'Other', 'wplegalpages' ),
+					'code'  => 'other',
+				),
+			);
+			return $legal_form_options;
+		}
 
 		/**
 		 * This Callback function for Show Page menu for WPLegalpages.
@@ -3938,6 +3973,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				'email'     => isset( $_POST['lp-email'] ) ? sanitize_email( wp_unslash( $_POST['lp-email'] ) ) : '',
 				'address'   => isset( $_POST['lp-address'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-address'] ) ) : '',
 				'niche'     => isset( $_POST['lp-niche'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-niche'] ) ) : '',
+				'representatives'	=> isset( $_POST['lp-legal-representative'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-legal-representative'] ) ) : '',
+				'legal_form'		=> isset( $_POST['lp-legal-form'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-legal-form'] ) ) : '',
+				'registration_no'	=> isset( $_POST['lp-registration-no'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-registration-no'] ) ) : '',
+				'reg_authority'		=> isset( $_POST['lp-registration-authority'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-registration-authority'] ) ) : '',
+				'vat_id'			=> isset( $_POST['lp-vat-id'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-vat-id'] ) ) : '',
 				'generate'  => isset( $_POST['lp-generate'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-generate'] ) ) : '',
 				'is_footer' => isset( $_POST['lp-footer'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-footer'] ) ) : '0',
 				'is_banner' => isset( $_POST['lp-banner'] ) ? sanitize_text_field( wp_unslash( $_POST['lp-banner'] ) ) : '0',
