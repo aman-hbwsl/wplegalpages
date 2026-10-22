@@ -1296,11 +1296,12 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			'disclosingParty'	=> $lp_general['disclosing-party'],
 			'recipientParty'	=> $lp_general['recipient-party'],
 			'last_updated'	    => $lp_general['last_updated'] ?? '',
-			'legal_form'		=> $lp_general['legal_form'] ?? '',
+			'legalForm'			=> $lp_general['legal_form'] ?? '',
+			'legalFormOptions'	=> $this->get_legal_form_options() ?? array(),
 			'representatives'	=> $lp_general['representatives'] ?? '',
-			'registration_no'	=> $lp_general['registration_no'] ?? '',
-			'reg_authority'		=> $lp_general['reg_authority'] ?? '',
-			'vat_id'			=> $lp_general['vat_id'] ?? ''
+			'registrationNo'	=> $lp_general['registration_no'] ?? '',
+			'regAuthority'		=> $lp_general['reg_authority'] ?? '',
+			'vatId'				=> $lp_general['vat_id'] ?? ''
 		);
 
 		$advanced_info[] = array(
@@ -3263,7 +3264,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			}
 		}
 
-		public function get_legal_form_options() {
+		public static function get_legal_form_options() {
 			$legal_form_options = array(
 				array(
 					'label' => __( 'Sole trader/Individual', 'wplegalpages' ),
@@ -5915,6 +5916,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 					$twitter_url      = isset( $lp_general['twitter-url'] ) ? $lp_general['twitter-url'] : '';
 					$linkedin_url     = isset( $lp_general['linkedin-url'] ) ? $lp_general['linkedin-url'] : '';
 					$address          = isset( $lp_general['address'] ) ? $lp_general['address'] : '';
+					$legal_form       = isset( $lp_general['legal_form'] ) ? $lp_general['legal_form'] : '';
+					$representatives  = isset( $lp_general['representatives'] ) ? $lp_general['representatives'] : '';
+					$registration_no  = isset( $lp_general['registration_no'] ) ? $lp_general['registration_no'] : '';
+					$reg_authority    = isset( $lp_general['reg_authority'] ) ? $lp_general['reg_authority'] : '';
+					$vat_id           = isset( $lp_general['vat_id'] ) ? $lp_general['vat_id'] : '';
 					if ( isset( $_POST['data'] ) && ! empty( $_POST['data'] ) ) {
 						$general                         = array();
 						$general['date']                 = isset( $_POST['data']['lp-date'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-date'] ) ) : $date;
@@ -5936,6 +5942,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 						$general['country']              = isset( $_POST['data']['lp-country'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-country'] ) ) : $country;
 						$general['language']             = isset( $_POST['data']['lp-lang'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-lang'] ) ) : determine_locale();
 						$general['address']              = isset( $_POST['data']['lp-address'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-address'] ) ) : $address;
+						$general['legal_form']           = isset( $_POST['data']['lp-legal-form'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-legal-form'] ) ) : $legal_form;
+						$general['representatives']      = isset( $_POST['data']['lp-representatives'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-representatives'] ) ) : $representatives;
+						$general['registration_no']      = isset( $_POST['data']['lp-registration-no'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-registration-no'] ) ) : $registration_no;
+						$general['reg_authority']        = isset( $_POST['data']['lp-registering-authority'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-registering-authority'] ) ) : $reg_authority;
+						$general['vat_id']               = isset( $_POST['data']['lp-vat-id'] ) ? sanitize_text_field( wp_unslash( $_POST['data']['lp-vat-id'] ) ) : $vat_id;
 						$general['niche']                = isset( $lp_general['niche'] ) ? $lp_general['niche'] : '';
 						$general['generate']             = isset( $lp_general['generate'] ) ? $lp_general['generate'] : '0';
 						$general['privacy']              = isset( $lp_general['privacy'] ) ? $lp_general['privacy'] : '0';
@@ -6242,6 +6253,9 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 						'error_msg' => $setting['error_msg'] ?? 'Invalid input',
 						'required' => $setting['required'],
 					);
+					if ( isset( $setting['options'] ) ) {
+						$field['options'] = $setting['options'];
+					}
 					$data[] = $field;
 				}
 			}

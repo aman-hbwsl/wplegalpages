@@ -559,6 +559,13 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 			$google           = ! empty( $lp_general['google-url'] ) ? esc_attr( $lp_general['google-url'] ) : '';
 			$twitter          = ! empty( $lp_general['twitter-url'] ) ? esc_attr( $lp_general['twitter-url'] ) : '';
 			$linkedin         = ! empty( $lp_general['linkedin-url'] ) ? esc_attr( $lp_general['linkedin-url'] ) : '';
+
+			$legal_form			= ! empty( $lp_general['legal_form'] ) ? esc_attr( $lp_general['legal_form'] ) : '';
+			$representatives	= ! empty( $lp_general['representatives'] ) ? esc_attr( $lp_general['representatives'] ) : '';
+			$registration_no	= ! empty( $lp_general['registration_no'] ) ? esc_attr( $lp_general['registration_no'] ) : '';
+			$reg_authority		= ! empty( $lp_general['reg_authority'] ) ? esc_attr( $lp_general['reg_authority'] ) : '';
+			$vat_id				= ! empty( $lp_general['vat_id'] ) ? esc_attr( $lp_general['vat_id'] ) : '';
+
 			switch ( $page ) {
 				case 'terms_of_use':
 					$fields = array(
@@ -1163,6 +1170,42 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'type'        => 'email',
 							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
+						),
+						'lp-legal-form' => array(
+							'title'    => __( 'Legal Form', 'wplegalpages' ),
+							'value'    => $legal_form,
+							'required' => true,
+							'type'     => 'select',
+							'options'  => array_map(
+								function ( $option ) use ( $legal_form ) {
+									return array(
+										'value'    => $option['code'],
+										'label'    => $option['label'],
+										'selected' => $option['code'] === $legal_form,
+									);
+								},
+								WP_Legal_Pages_Admin::get_legal_form_options()
+							),
+						),
+						'lp-representatives' => array(
+							'title'    => __( 'Representatives', 'wplegalpages' ),
+							'value'    => $representatives,
+							'required' => true,
+						),
+						'lp-registration-no' => array(
+							'title'    => __( 'Company Registration Number', 'wplegalpages' ),
+							'value'    => $registration_no,
+							'required' => true,
+						),
+						'lp-registering-authority' => array(
+							'title'    => __( 'Registering Authority', 'wplegalpages' ),
+							'value'    => $reg_authority,
+							'required' => true,
+						),
+						'lp-vat-id' => array(
+							'title'    => __( 'VAT ID/GST No.', 'wplegalpages' ),
+							'value'    => $vat_id,
+							'required' => true,
 						),
 					);
 					break;
