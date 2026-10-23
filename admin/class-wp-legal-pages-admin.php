@@ -1598,6 +1598,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				$options  = get_post_meta( $pid, 'legal_page_ccpa_options', true );
 				break;
 
+			case 'gdpr_privacy_policy':
+				$settings = get_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', true );
+				$options  = get_post_meta( $pid, 'legal_page_gdpr_privacy_policy_options', true );
+				break;
+
 			case 'privacy_policy':
 				$settings = get_post_meta( $pid, 'legal_page_privacy_settings', true );
 				$options  = get_post_meta( $pid, 'legal_page_privacy_options', true );
@@ -1846,6 +1851,8 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				break;
 
 			case "gdpr_privacy_policy":
+				update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', $page_settings );
+				update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_options', $page_options );
 				update_option( 'wplegal_gdpr_privacy_policy_page', $pid );
 				break;
 
@@ -5980,6 +5987,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			);
 			if ( isset( $_GET['action'] ) ) {
 				$step  = isset( $_GET['step'] ) ? sanitize_text_field( wp_unslash( $_GET['step'] ) ) : '';
+				error_log("DODODO in get step settings, STEP - " . $step);
 				if ( isset( $_GET['page'] ) ) {
 					$page = sanitize_text_field( wp_unslash( $_GET['page'] ) );
 					update_option( 'wplegal_last_selected_page', $page );
@@ -6187,6 +6195,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 		 * @return array
 		 */
 		public function wplegalpages_get_page_settings( $page ) {
+			error_log("DODODO getting page settings.");
 			$data = array();
 			require_once plugin_dir_path( __DIR__ ) . 'admin/wizard/class-wp-legal-pages-wizard-page.php';
 			$lp            = new WP_Legal_Pages_Wizard_Page();
@@ -6270,6 +6279,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 		 * @return array
 		 */
 		public function wplegalpages_get_page_sections( $page ) {
+			error_log("DODODO getting page sections.");
 			require_once plugin_dir_path( __DIR__ ) . 'admin/wizard/class-wp-legal-pages-wizard-page.php';
 			$lp          = new WP_Legal_Pages_Wizard_Page();   
 			$lp_sections = (array) $lp->get_section_fields_by_page( $page );
@@ -6306,6 +6316,8 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 				}
 				$lp_section_fields[ $key ] = $section;
 			}
+
+			error_log("DODODO for GDPR Privacy Policy section fields are - \n" . print_r($lp_section_fields, true));
 
 			return $lp_section_fields;
 		}

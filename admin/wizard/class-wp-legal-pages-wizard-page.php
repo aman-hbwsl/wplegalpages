@@ -1774,150 +1774,170 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 					}
 					break;
 				case 'digital_goods_refund_policy':
-						if ( empty( $pid ) ) {
-							$pid = $this->get_pid_by_insert_page( $page, 'Digital Goods Refund Policy' );
-							update_post_meta( $pid, 'is_legal', 'yes' );
-							update_post_meta( $pid, 'legal_page_type', $page );
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'Digital Goods Refund Policy' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_digital_goods_refund_policy_settings' );
+						update_post_meta( $pid, 'legal_page_digital_goods_refund_policy_settings', $fields );
+						update_option( 'wplegal_digital_goods_refund_policy_page', $pid );
+					} else {
+						$digital_goods_refund_policy_options = get_post_meta( $pid, 'legal_page_digital_goods_refund_policy_settings', true );
+						if ( ! $digital_goods_refund_policy_options || empty( $digital_goods_refund_policy_options ) ) {
 							$fields = $this->get_remote_data( 'get_digital_goods_refund_policy_settings' );
 							update_post_meta( $pid, 'legal_page_digital_goods_refund_policy_settings', $fields );
-							update_option( 'wplegal_digital_goods_refund_policy_page', $pid );
 						} else {
-							$digital_goods_refund_policy_options = get_post_meta( $pid, 'legal_page_digital_goods_refund_policy_settings', true );
-							if ( ! $digital_goods_refund_policy_options || empty( $digital_goods_refund_policy_options ) ) {
-								$fields = $this->get_remote_data( 'get_digital_goods_refund_policy_settings' );
-								update_post_meta( $pid, 'legal_page_digital_goods_refund_policy_settings', $fields );
-							} else {
-								$fields = $digital_goods_refund_policy_options;
-							}
+							$fields = $digital_goods_refund_policy_options;
 						}
-						break;
-						case 'dmca':
-						if ( empty( $pid ) ) {
-							$pid = $this->get_pid_by_insert_page( $page, 'DMCA' );
-							update_post_meta( $pid, 'is_legal', 'yes' );
-							update_post_meta( $pid, 'legal_page_type', $page );
+					}
+					break;
+				case 'dmca':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'DMCA' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_dmca_policy_settings' );
+						update_post_meta( $pid, 'legal_page_dmca_policy_settings', $fields );
+						update_option( 'wplegal_dmca_page', $pid );
+					} else {
+						$dmca_policy_options = get_post_meta( $pid, 'legal_page_dmca_policy_settings', true );
+						if ( ! $dmca_policy_options || empty( $dmca_policy_options ) ) {
 							$fields = $this->get_remote_data( 'get_dmca_policy_settings' );
 							update_post_meta( $pid, 'legal_page_dmca_policy_settings', $fields );
-							update_option( 'wplegal_dmca_page', $pid );
 						} else {
-							$dmca_policy_options = get_post_meta( $pid, 'legal_page_dmca_policy_settings', true );
-							if ( ! $dmca_policy_options || empty( $dmca_policy_options ) ) {
-								$fields = $this->get_remote_data( 'get_dmca_policy_settings' );
-								update_post_meta( $pid, 'legal_page_dmca_policy_settings', $fields );
-							} else {
-								$fields = $dmca_policy_options;
-							}
+							$fields = $dmca_policy_options;
 						}
-						break;
-						case 'cookies_policy':
-							if ( empty( $pid ) ) {
-								$pid = $this->get_pid_by_insert_page( $page, 'Cookies Policy' );
-								update_post_meta( $pid, 'is_legal', 'yes' );
-								update_post_meta( $pid, 'legal_page_type', $page );
-								$fields = $this->get_remote_data( 'get_cookies_policy_settings' );
-								update_post_meta( $pid, 'legal_page_cookies_policy_settings', $fields );
-								update_option( 'wplegal_cookies_policy_page', $pid );
-							} else {
-								$cookies_policy_options = get_post_meta( $pid, 'legal_page_cookies_policy_settings', true );
-								if ( ! $cookies_policy_options || empty( $cookies_policy_options ) ) {
-									$fields = $this->get_remote_data( 'get_cookies_policy_settings' );
-									update_post_meta( $pid, 'legal_page_cookies_policy_settings', $fields );
-								} else {
-									$fields = $cookies_policy_options;
-								}
-							}
-							break;
-						case 'general_disclaimer':
-								if ( empty( $pid ) ) {
-									$pid = $this->get_pid_by_insert_page( $page, 'General Disclaimer' );
-									update_post_meta( $pid, 'is_legal', 'yes' );
-									update_post_meta( $pid, 'legal_page_type', $page );
-									$fields = $this->get_remote_data( 'get_general_disclaimer_settings' );
-									update_post_meta( $pid, 'legal_page_general_disclaimer_settings', $fields );
-									update_option( 'wplegal_general_disclaimer_page', $pid );
-								} else {
-									$general_disclaimer_options = get_post_meta( $pid, 'legal_page_general_disclaimer_settings', true );
-									if ( ! $general_disclaimer_options || empty( $general_disclaimer_options ) ) {
-										$fields = $this->get_remote_data( 'get_general_disclaimer_settings' );
-										update_post_meta( $pid, 'legal_page_general_disclaimer_settings', $fields );
-									} else {
-										$fields = $general_disclaimer_options;
-									}
-								}
-								break;
-						case 'earnings_disclaimer':
-									if ( empty( $pid ) ) {
-										$pid = $this->get_pid_by_insert_page( $page, 'Earnings Disclaimer' );
-										update_post_meta( $pid, 'is_legal', 'yes' );
-										update_post_meta( $pid, 'legal_page_type', $page );
-										$fields = $this->get_remote_data( 'get_earnings_disclaimer_settings' );
-										update_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', $fields );
-										update_option( 'wplegal_earnings_disclaimer_page', $pid );
-									} else {
-										$earnings_disclaimer_options = get_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', true );
-										if ( ! $earnings_disclaimer_options || empty( $earnings_disclaimer_options ) ) {
-											$fields = $this->get_remote_data( 'get_earnings_disclaimer_settings' );
-											update_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', $fields );
-										} else {
-											$fields = $earnings_disclaimer_options;
-										}
-									}
-								break;
-							case 'coppa':
-									if ( empty( $pid ) ) {
-										$pid = $this->get_pid_by_insert_page( $page, 'COPPA - Children’s Online Privacy Policy' );
-										update_post_meta( $pid, 'is_legal', 'yes' );
-										update_post_meta( $pid, 'legal_page_type', $page );
-										$fields = $this->get_remote_data( 'get_coppa_settings' );
-										update_post_meta( $pid, 'legal_page_coppa_settings', $fields );
-										update_option( 'wplegal_coppa_policy_page', $pid );
-									} else {
-										$coppa_options = get_post_meta( $pid, 'legal_page_coppa_settings', true );
-										if ( ! $coppa_options || empty( $coppa_options ) ) {
-											$fields = $this->get_remote_data( 'get_coppa_settings' );
-											update_post_meta( $pid, 'legal_page_coppa_settings', $fields );
-										} else {
-											$fields = $coppa_options;
-										}
-									}
-											
-							break;
-							case 'cvd_policy':
-								if ( empty( $pid ) ) {
-									$pid = $this->get_pid_by_insert_page( $page, 'Coordinated Vulnerability Disclosure (CVD) Policy' );
-									update_post_meta( $pid, 'is_legal', 'yes' );
-									update_post_meta( $pid, 'legal_page_type', $page );
-									$fields = $this->get_remote_data( 'get_cvd_policy_settings' );
-									update_post_meta( $pid, 'legal_page_cvd_settings', $fields );
-									update_option( 'wplegal_cvd_page', $pid );
-								} else {
-									$cvd_options = get_post_meta( $pid, 'legal_page_cvd_settings', true );
-									if ( ! $cvd_options || empty( $cvd_options ) ) {
-										$fields = $this->get_remote_data( 'get_cvd_policy_settings' );
-										update_post_meta( $pid, 'legal_page_cvd_settings', $fields );
-									} else {
-										$fields = $cvd_options;
-									}
-								}
-								break;
-							case 'doc_policy':
-								if ( empty( $pid ) ) {
-									$pid = $this->get_pid_by_insert_page( $page, 'EU Declaration of Conformity (DoC)' );
-									update_post_meta( $pid, 'is_legal', 'yes' );
-									update_post_meta( $pid, 'legal_page_type', $page );
-									$fields = $this->get_remote_data( 'get_doc_policy_settings' );
-									update_post_meta( $pid, 'legal_page_doc_settings', $fields );
-									update_option( 'wplegal_doc_page', $pid );
-								} else {
-									$doc_options = get_post_meta( $pid, 'legal_page_doc_settings', true );
-									if ( ! $doc_options || empty( $doc_options ) ) {
-										$fields = $this->get_remote_data( 'get_doc_policy_settings' );
-										update_post_meta( $pid, 'legal_page_doc_settings', $fields );
-									} else {
-										$fields = $doc_options;
-									}
-								}
-								break;
+					}
+					break;
+				case 'cookies_policy':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'Cookies Policy' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_cookies_policy_settings' );
+						update_post_meta( $pid, 'legal_page_cookies_policy_settings', $fields );
+						update_option( 'wplegal_cookies_policy_page', $pid );
+					} else {
+						$cookies_policy_options = get_post_meta( $pid, 'legal_page_cookies_policy_settings', true );
+						if ( ! $cookies_policy_options || empty( $cookies_policy_options ) ) {
+							$fields = $this->get_remote_data( 'get_cookies_policy_settings' );
+							update_post_meta( $pid, 'legal_page_cookies_policy_settings', $fields );
+						} else {
+							$fields = $cookies_policy_options;
+						}
+					}
+					break;
+				case 'general_disclaimer':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'General Disclaimer' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_general_disclaimer_settings' );
+						update_post_meta( $pid, 'legal_page_general_disclaimer_settings', $fields );
+						update_option( 'wplegal_general_disclaimer_page', $pid );
+					} else {
+						$general_disclaimer_options = get_post_meta( $pid, 'legal_page_general_disclaimer_settings', true );
+						if ( ! $general_disclaimer_options || empty( $general_disclaimer_options ) ) {
+							$fields = $this->get_remote_data( 'get_general_disclaimer_settings' );
+							update_post_meta( $pid, 'legal_page_general_disclaimer_settings', $fields );
+						} else {
+							$fields = $general_disclaimer_options;
+						}
+					}
+					break;
+				case 'earnings_disclaimer':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'Earnings Disclaimer' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_earnings_disclaimer_settings' );
+						update_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', $fields );
+						update_option( 'wplegal_earnings_disclaimer_page', $pid );
+					} else {
+						$earnings_disclaimer_options = get_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', true );
+						if ( ! $earnings_disclaimer_options || empty( $earnings_disclaimer_options ) ) {
+							$fields = $this->get_remote_data( 'get_earnings_disclaimer_settings' );
+							update_post_meta( $pid, 'legal_page_earnings_disclaimer_settings', $fields );
+						} else {
+							$fields = $earnings_disclaimer_options;
+						}
+					}
+					break;
+				case 'coppa':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'COPPA - Children’s Online Privacy Policy' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_coppa_settings' );
+						update_post_meta( $pid, 'legal_page_coppa_settings', $fields );
+						update_option( 'wplegal_coppa_policy_page', $pid );
+					} else {
+						$coppa_options = get_post_meta( $pid, 'legal_page_coppa_settings', true );
+						if ( ! $coppa_options || empty( $coppa_options ) ) {
+							$fields = $this->get_remote_data( 'get_coppa_settings' );
+							update_post_meta( $pid, 'legal_page_coppa_settings', $fields );
+						} else {
+							$fields = $coppa_options;
+						}
+					}
+								
+					break;
+				case 'cvd_policy':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'Coordinated Vulnerability Disclosure (CVD) Policy' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_cvd_policy_settings' );
+						update_post_meta( $pid, 'legal_page_cvd_settings', $fields );
+						update_option( 'wplegal_cvd_page', $pid );
+					} else {
+						$cvd_options = get_post_meta( $pid, 'legal_page_cvd_settings', true );
+						if ( ! $cvd_options || empty( $cvd_options ) ) {
+							$fields = $this->get_remote_data( 'get_cvd_policy_settings' );
+							update_post_meta( $pid, 'legal_page_cvd_settings', $fields );
+						} else {
+							$fields = $cvd_options;
+						}
+					}
+					break;
+				case 'doc_policy':
+					if ( empty( $pid ) ) {
+						$pid = $this->get_pid_by_insert_page( $page, 'EU Declaration of Conformity (DoC)' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_doc_policy_settings' );
+						update_post_meta( $pid, 'legal_page_doc_settings', $fields );
+						update_option( 'wplegal_doc_page', $pid );
+					} else {
+						$doc_options = get_post_meta( $pid, 'legal_page_doc_settings', true );
+						if ( ! $doc_options || empty( $doc_options ) ) {
+							$fields = $this->get_remote_data( 'get_doc_policy_settings' );
+							update_post_meta( $pid, 'legal_page_doc_settings', $fields );
+						} else {
+							$fields = $doc_options;
+						}
+					}
+					break;
+				case 'gdpr_privacy_policy':
+					if ( empty( $pid ) ) {
+						error_log("DODODO empty PID for GDPR Privacy Policy");
+						$pid = $this->get_pid_by_insert_page( $page, 'GDPR Privacy Policy' );
+						update_post_meta( $pid, 'is_legal', 'yes' );
+						update_post_meta( $pid, 'legal_page_type', $page );
+						$fields = $this->get_remote_data( 'get_gdpr_privacy_policy_settings' );
+						update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', $fields );
+						update_option( 'wplegal_gdpr_privacy_policy_page', $pid );
+					} else {
+						error_log("DODODO PID present for GDPR Privacy Policy");
+						$gdpr_privacy_policy_options = get_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', true );
+						if ( ! $gdpr_privacy_policy_options || empty( $gdpr_privacy_policy_options ) ) {
+							$fields = $this->get_remote_data( 'get_gdpr_privacy_policy_settings' );
+							update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', $fields );
+						} else {
+							$fields = $gdpr_privacy_policy_options;
+						}
+					}
+					break;
 			}
 			return $fields;
 		}
