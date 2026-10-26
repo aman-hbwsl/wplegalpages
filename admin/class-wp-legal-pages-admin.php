@@ -1156,6 +1156,36 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 	    return $value;
 	}
 
+	/**
+	 * Store SSL and Cookie Consent plugin status in lp_general,
+	 * used by the GDPR Privacy Policy page settings.
+	 *
+	 * @return array Updated lp_general option.
+	 */
+	public function wplp_sync_site_status() {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		$lp_general = get_option( 'lp_general' );
+		if ( ! is_array( $lp_general ) ) {
+			$lp_general = array();
+		}
+
+		$ssl_active               = (int) ( 'https' === wp_parse_url( get_site_url(), PHP_URL_SCHEME ) );
+		$cookie_consent_installed = (int) is_plugin_active( 'gdpr-cookie-consent/gdpr-cookie-consent.php' );
+
+		if ( ! isset( $lp_general['ssl_active'], $lp_general['cookie_consent_installed'] )
+			|| (int) $lp_general['ssl_active'] !== $ssl_active
+			|| (int) $lp_general['cookie_consent_installed'] !== $cookie_consent_installed ) {
+			$lp_general['ssl_active']               = $ssl_active;
+			$lp_general['cookie_consent_installed'] = $cookie_consent_installed;
+			update_option( 'lp_general', $lp_general );
+		}
+
+		return $lp_general;
+	}
+
  	public function wplp_fetch_legal_pages_data_react_app( WP_REST_Request $request ) {
 		ob_start();
 
@@ -1268,13 +1298,9 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			$wpdb->prepare( 'SELECT id, popup_name, popup_template FROM %i', $lp_obj->popuptable )
 		);
 
-		$lp_general = get_option("lp_general");
+		$lp_general = $this->wplp_sync_site_status();
 		$lp_footer_options = get_option( 'lp_footer_options' );
 		$lp_banner_options = get_option( 'lp_banner_options' );
-
-		if (!is_array($lp_general)) {
-			$lp_general = array();
-		}
 
 		$business_info[] = array(
 			'domain' => !empty($lp_general['domain']) ? $lp_general['domain'] : get_bloginfo('url'),
@@ -1301,7 +1327,9 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			'representatives'	=> $lp_general['representatives'] ?? '',
 			'registrationNo'	=> $lp_general['registration_no'] ?? '',
 			'regAuthority'		=> $lp_general['reg_authority'] ?? '',
-			'vatId'				=> $lp_general['vat_id'] ?? ''
+			'vatId'				=> $lp_general['vat_id'] ?? '',
+			'ssl_active'		=> $lp_general['ssl_active'],
+			'cookie_consent_installed'	=> $lp_general['cookie_consent_installed'],
 		);
 
 		$advanced_info[] = array(
@@ -4643,6 +4671,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			if ( empty( $last_selected_page ) ) {
 				$last_selected_page = 'privacy_policy';
 			}
+			$lp_general = $this->wplp_sync_site_status();
 
 			wp_localize_script(
 				$this->plugin_name . '-vue-script',
@@ -4694,6 +4723,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 					),
 					'templates' => json_decode( $privacy_templates, true ),
 					'last_selected_page' => $last_selected_page,
+					'ssl_active'         => (int) ( $lp_general['ssl_active'] ?? 1 ),
 				)
 			);
 			wp_print_styles( $this->plugin_name . '-select2' );
@@ -5881,6 +5911,56 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 								$data = array_merge( $data, $option );
 							}
 							update_post_meta( $pid, 'legal_page_doc_options', $data );
+							break;
+						case 'gdpr_privacy_policy':
+							if ( empty( $pid ) ) {
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'GDPR Privacy Policy' );
+								update_post_meta( $pid, 'is_legal', 'yes' );
+								update_post_meta( $pid, 'legal_page_type', $page );
+								$gdpr_privacy_policy_options = $this->wplegalpages_get_remote_data( 'get_gdpr_privacy_policy_settings' );
+
+								$gdpr_privacy_policy_options = $this->normalize_settings( $gdpr_privacy_policy_options );
+
+								update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', $gdpr_privacy_policy_options );
+								update_option( 'wplegal_gdpr_privacy_policy_page', $pid );
+							} else {
+								$gdpr_privacy_policy_settings = get_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', true );
+								$gdpr_privacy_policy_options  = $this->normalize_settings( $gdpr_privacy_policy_settings );
+							}
+							$data = array();
+							foreach ( $gdpr_privacy_policy_options as $key => $option ) {
+								if ( isset( $_POST['data'][ $key ] ) ) {
+									$option->checked = true;
+									$fields          = $option->fields;
+									$settings_data   = array();
+									foreach ( $fields as $field_key => $field ) {
+										$field_data                  = $this->wplegalpages_page_sections_settings_save( $field, $post_data );
+										$settings_data[ $field_key ] = $field_data;
+									}
+									$option->fields = $settings_data;
+								} else {
+									$option->checked = false;
+								}
+								$data[ $key ] = $option;
+							}
+							update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_settings', $data );
+							$options = array();
+							foreach ( $data as $key => $value ) {
+								if ( $value->checked ) {
+									if ( isset( $value->fields ) && ! empty( $value->fields ) ) {
+										$subfields = $value->fields;
+										foreach ( $subfields as $sub_key => $sub_fields ) {
+											$options[ $sub_key ]         = $this->wplegalpages_page_sections_clauses_save( $sub_fields );
+											$options[ $sub_key ][ $key ] = true;
+										}
+									}
+								}
+							}
+							$data = array();
+							foreach ( $options as $option ) {
+								$data = array_merge( $data, $option );
+							}
+							update_post_meta( $pid, 'legal_page_gdpr_privacy_policy_options', $data );
 							break;
 					}
 					$result['success'] = true;

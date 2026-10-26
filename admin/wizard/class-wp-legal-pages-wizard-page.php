@@ -2253,7 +2253,13 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 						update_post_meta( $pid, 'legal_page_type', $page );
 						update_option( 'wplegal_gdpr_privacy_policy_page', $pid );
 					}
-					$options      = array();
+					$options = get_post_meta( $pid, 'legal_page_gdpr_privacy_policy_options', true );
+					if ( ! is_array( $options ) ) {
+						$options = array();
+					}
+					if ( class_exists( 'WP_Legal_Pages_Admin' ) ) {
+						$lp_general['legalFormOptions'] = WP_Legal_Pages_Admin::get_legal_form_options();
+					}
 					$preview_text = $this->get_preview_from_remote( $page, $options, $lp_general, $lp_general['language'] );
 					break;
 
