@@ -556,17 +556,17 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 			$duration         = ! empty( $lp_general['duration'] ) ? esc_attr( $lp_general['duration'] ) : '';
 			$disclosing_party = ! empty( $lp_general['disclosing-party'] ) ? esc_attr( $lp_general['disclosing-party'] ) : '';
 			$recipient_party  = ! empty( $lp_general['recipient-party'] ) ? esc_attr( $lp_general['recipient-party'] ) : '';
-			$facebook         = ! empty( $lp_general['facebook-url'] ) ? esc_attr( $lp_general['facebook-url'] ) : '';
-			$google           = ! empty( $lp_general['google-url'] ) ? esc_attr( $lp_general['google-url'] ) : '';
-			$twitter          = ! empty( $lp_general['twitter-url'] ) ? esc_attr( $lp_general['twitter-url'] ) : '';
-			$linkedin         = ! empty( $lp_general['linkedin-url'] ) ? esc_attr( $lp_general['linkedin-url'] ) : '';
-
-			$legal_form			= ! empty( $lp_general['legal_form'] ) ? esc_attr( $lp_general['legal_form'] ) : '';
-			$representatives	= ! empty( $lp_general['representatives'] ) ? esc_attr( $lp_general['representatives'] ) : '';
-			$registration_no	= ! empty( $lp_general['registration_no'] ) ? esc_attr( $lp_general['registration_no'] ) : '';
-			$reg_authority		= ! empty( $lp_general['reg_authority'] ) ? esc_attr( $lp_general['reg_authority'] ) : '';
-			$vat_id				= ! empty( $lp_general['vat_id'] ) ? esc_attr( $lp_general['vat_id'] ) : '';
-
+			$lp_add_scheme = static function ( $url ) {
+				$url = trim( (string) $url );
+				if ( '' !== $url && ! preg_match( '#^https?://#i', $url ) ) {
+					$url = 'https://' . ltrim( $url, '/' );
+				}
+				return $url;
+			};
+			$facebook         = ! empty( $lp_general['facebook-url'] ) ? esc_attr( $lp_add_scheme( $lp_general['facebook-url'] ) ) : '';
+			$google           = ! empty( $lp_general['google-url'] ) ? esc_attr( $lp_add_scheme( $lp_general['google-url'] ) ) : '';
+			$twitter          = ! empty( $lp_general['twitter-url'] ) ? esc_attr( $lp_add_scheme( $lp_general['twitter-url'] ) ) : '';
+			$linkedin         = ! empty( $lp_general['linkedin-url'] ) ? esc_attr( $lp_add_scheme( $lp_general['linkedin-url'] ) ) : '';
 			switch ( $page ) {
 				case 'terms_of_use':
 					$fields = array(
