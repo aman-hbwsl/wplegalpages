@@ -4910,7 +4910,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 		 * @param string $content Page content.
 		 * @return int|void|WP_Error
 		 */
-		public function wplegalpages_get_pid_by_insert_page( $title = '', $content = '' ) {
+		public function wplegalpages_get_pid_by_insert_page( $title = '', $content = '', $page = '' ) {
 			$post_args = array(
 				'post_title'   => apply_filters( 'the_title', $title ),
 				'post_content' => $content,
@@ -4920,9 +4920,27 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			);
 			$pid       = wp_insert_post( $post_args );
 			if ( ! is_wp_error( $pid ) ) {
+				self::wplegalpages_set_policy_version( $pid, $page );
 				return $pid;
 			} else {
 				return;
+			}
+		}
+
+		/**
+		 * Store the policy template version (from the API's policies.json) on a newly created legal page.
+		 *
+		 * @param int    $pid  Page ID.
+		 * @param string $page Policy slug.
+		 */
+		public static function wplegalpages_set_policy_version( $pid, $page ) {
+			if ( empty( $page ) ) {
+				return;
+			}
+			$response = wp_remote_get( add_query_arg( 'page', $page, WPLEGAL_API_URL . 'get_policy_version' ), array( 'timeout' => 3 ) );  // phpcs:ignore WordPressVIPMinimum.Functions.RestrictedFunctions.wp_remote_get_wp_remote_get -- vip_safe_wp_remote_get() only exists on VIP hosting.
+			$body     = json_decode( wp_remote_retrieve_body( $response ), true );
+			if ( ! empty( $body['version'] ) ) {
+				update_post_meta( $pid, '_wplp_legal_page_version', sanitize_text_field( $body['version'] ) );
 			}
 		}
 
@@ -5002,7 +5020,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'terms_of_use_free':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Terms of Use' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Terms of Use', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$terms_of_use_free_options = $this->wplegalpages_get_remote_data( 'get_terms_of_use' );
@@ -5050,7 +5068,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'fb_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Facebook Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Facebook Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$fb_policy_options = $this->wplegalpages_get_remote_data( 'get_fb_policy' );
@@ -5100,7 +5118,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'affiliate_agreement':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Affiliate Agreement' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Affiliate Agreement', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$affiliate_agreement_options = $this->wplegalpages_get_remote_data( 'get_affiliate_agreement' );
@@ -5150,7 +5168,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'standard_privacy_policy':
 							if ( empty( $pid ) ) {
-    						    $pid = $this->wplegalpages_get_pid_by_insert_page( 'Standard Privacy Policy' );
+    						    $pid = $this->wplegalpages_get_pid_by_insert_page( 'Standard Privacy Policy', '', $page );
     						    update_post_meta( $pid, 'is_legal', 'yes' );
     						    update_post_meta( $pid, 'legal_page_type', $page );
     						    $standard_privacy_policy_options = $this->wplegalpages_get_remote_data( 'get_standard_privacy_policy' );
@@ -5200,7 +5218,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'california_privacy_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Privacy Notice For California Residents' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Privacy Notice For California Residents', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$ccpa_options = $this->wplegalpages_get_remote_data( 'get_ccpa_settings' );
@@ -5254,7 +5272,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'returns_refunds_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Returns and Refunds Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Returns and Refunds Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$returns_refunds_options = $this->wplegalpages_get_remote_data( 'get_returns_refunds_settings' );
@@ -5304,7 +5322,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'impressum':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Impressum' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Impressum', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$impressum_options = $this->wplegalpages_get_remote_data( 'get_impressum_settings' );
@@ -5355,7 +5373,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 
 						case 'end_user_license':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'End User License Agreement' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'End User License Agreement', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$end_user_license_options = $this->wplegalpages_get_remote_data( 'get_end_user_license_settings' );
@@ -5408,7 +5426,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 
 						case 'digital_goods_refund_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Digital Goods Refund Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Digital Goods Refund Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$digital_goods_refund_policy_options = $this->wplegalpages_get_remote_data( 'get_digital_goods_refund_policy_settings' );
@@ -5460,7 +5478,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'privacy_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Privacy Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Privacy Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$privacy_options = $this->wplegalpages_get_remote_data( 'get_privacy_settings' );
@@ -5514,7 +5532,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'dmca':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'DMCA' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'DMCA', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$dmca_options = $this->wplegalpages_get_remote_data( 'get_dmca_policy_settings' );
@@ -5564,7 +5582,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'cookies_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Cookies Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Cookies Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$cookies_policy_options = $this->wplegalpages_get_remote_data( 'get_cookies_policy_settings' );
@@ -5614,7 +5632,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'general_disclaimer':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'General Disclaimer' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'General Disclaimer', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$general_disclaimer_options = $this->wplegalpages_get_remote_data( 'get_general_disclaimer_settings' );
@@ -5664,7 +5682,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'earnings_disclaimer':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Earnings Disclaimer' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Earnings Disclaimer', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$earnings_disclaimer_options = $this->wplegalpages_get_remote_data( 'get_earnings_disclaimer_settings' );
@@ -5714,7 +5732,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'coppa':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'COPPA - Children’s Online Privacy Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'COPPA - Children’s Online Privacy Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$coppa_options = $this->wplegalpages_get_remote_data( 'get_coppa_settings' );
@@ -5764,7 +5782,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'custom_legal':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Custom Legal Page' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Custom Legal Page', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$custom_legal_options = $lp->get_custom_legal_page_fields();
@@ -5814,7 +5832,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'cvd_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Coordinated Vulnerability Disclosure (CVD) Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'Coordinated Vulnerability Disclosure (CVD) Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$cvd_options = $this->wplegalpages_get_remote_data( 'get_cvd_policy_settings' );
@@ -5864,7 +5882,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'doc_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'EU Declaration of Conformity (DoC)' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'EU Declaration of Conformity (DoC)', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$doc_options = $this->wplegalpages_get_remote_data( 'get_doc_policy_settings' );
@@ -5914,7 +5932,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 							break;
 						case 'gdpr_privacy_policy':
 							if ( empty( $pid ) ) {
-								$pid = $this->wplegalpages_get_pid_by_insert_page( 'GDPR Privacy Policy' );
+								$pid = $this->wplegalpages_get_pid_by_insert_page( 'GDPR Privacy Policy', '', $page );
 								update_post_meta( $pid, 'is_legal', 'yes' );
 								update_post_meta( $pid, 'legal_page_type', $page );
 								$gdpr_privacy_policy_options = $this->wplegalpages_get_remote_data( 'get_gdpr_privacy_policy_settings' );

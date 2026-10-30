@@ -239,6 +239,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 				'ID'           => $pid,
 			);
 			wp_update_post( $post_args );
+			WP_Legal_Pages_Admin::wplegalpages_set_policy_version( $pid, $page );
 			$page_preview = '<div class="page_preview">';
 			switch ( $page ) {
 				case 'terms_of_use':
@@ -604,7 +605,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -638,7 +639,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -700,7 +701,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -717,7 +718,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 								'value'    => $email,
 								'required' => true,
 								'type'        => 'email',
-								'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+								'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     							'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 							),
 						);
@@ -773,7 +774,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
 							'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -889,7 +890,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-facebook-url'  => array(
@@ -938,7 +939,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -967,7 +968,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 								'value'    => $email,
 								'required' => true,
 								'type'        => 'email',
-								'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+								'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     							'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 							),
 						);
@@ -989,7 +990,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-address'       => array(
@@ -1028,7 +1029,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -1062,7 +1063,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -1091,7 +1092,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-street'        => array(
@@ -1123,7 +1124,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-street'      => array(
@@ -1163,13 +1164,25 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $trading_name,
 							'required' => true,
 						),
+						'lp-phone'         => array(
+							'title'    => __( 'Phone', 'wplegalpages' ),
+							'value'    => $phone,
+							'required' => true,
+							'pattern'     => '^\+?[0-9\s\-]{10,15}$',
+    						'error_msg'   => __( 'Please enter a valid phone number (10–15 digits).', 'wplegalpages' ),
+						),
 						'lp-email'         => array(
 							'title'    => __( 'Email', 'wplegalpages' ),
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
+						),
+						'lp-city-state'    => array(
+							'title'    => __( 'City, State, Zip code', 'wplegalpages' ),
+							'value'    => $city_state,
+							'required' => true,
 						),
 						'lp-legal-form' => array(
 							'title'    => __( 'Legal Form', 'wplegalpages' ),
@@ -1254,7 +1267,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-phone'       => array(
@@ -1304,7 +1317,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -1338,7 +1351,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -1372,7 +1385,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 						'lp-address'         => array(
@@ -1431,7 +1444,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $email,
 							'required' => true,
 							'type'        => 'email',
-							'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+							'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     						'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 						),
 					);
@@ -1489,7 +1502,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 								'required'  => true,
 								'shortcode' => '[Email]',
 								'type'        => 'email',
-								'pattern'     => '^[\w\.-]+@[\w\.-]+\.\w{2,}$',
+								'pattern'     => '^[\w.\-]+@[\w.\-]+\.\w{2,}$',
     							'error_msg'   => __( 'Please enter a valid email address.', 'wplegalpages' ),
 							),
 						);
@@ -1532,6 +1545,7 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 			);
 			$pid        = wp_insert_post( $post_args );
 			if ( ! is_wp_error( $pid ) ) {
+				WP_Legal_Pages_Admin::wplegalpages_set_policy_version( $pid, $page );
 				return $pid;
 			} else {
 				return;

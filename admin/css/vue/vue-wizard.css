@@ -1616,6 +1616,16 @@ button[data-v-09b2f69e] {
 	max-width: 750px;
 	margin: 0 auto !important;
 }
+/* Core block table styles are not loaded in admin, so mirror them for the preview. */
+.wplegal-page-preview .wp-block-table table {
+	width: 100%;
+	border-collapse: collapse;
+}
+.wplegal-page-preview .wp-block-table th,
+.wplegal-page-preview .wp-block-table td {
+	border: 1px solid;
+	padding: 0.5em;
+}
 .wplegalpages-wizard-template-text {
 	color: #393f4a;
 }
