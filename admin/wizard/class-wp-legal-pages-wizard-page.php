@@ -1184,6 +1184,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 							'value'    => $city_state,
 							'required' => true,
 						),
+						'lp-country'       => array(
+							'title'    => __( 'Country', 'wplegalpages' ),
+							'value'    => $country,
+							'required' => true,
+						),
 						'lp-legal-form' => array(
 							'title'    => __( 'Legal Form', 'wplegalpages' ),
 							'value'    => $legal_form,
