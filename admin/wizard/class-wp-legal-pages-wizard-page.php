@@ -556,6 +556,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Wizard_Page' ) ) {
 			$duration         = ! empty( $lp_general['duration'] ) ? esc_attr( $lp_general['duration'] ) : '';
 			$disclosing_party = ! empty( $lp_general['disclosing-party'] ) ? esc_attr( $lp_general['disclosing-party'] ) : '';
 			$recipient_party  = ! empty( $lp_general['recipient-party'] ) ? esc_attr( $lp_general['recipient-party'] ) : '';
+			$legal_form       = ! empty( $lp_general['legal_form'] ) ? esc_attr( $lp_general['legal_form'] ) : '';
+			$representatives  = ! empty( $lp_general['representatives'] ) ? esc_attr( $lp_general['representatives'] ) : '';
+			$registration_no  = ! empty( $lp_general['registration_no'] ) ? esc_attr( $lp_general['registration_no'] ) : '';
+			$reg_authority    = ! empty( $lp_general['reg_authority'] ) ? esc_attr( $lp_general['reg_authority'] ) : '';
+			$vat_id           = ! empty( $lp_general['vat_id'] ) ? esc_attr( $lp_general['vat_id'] ) : '';
 			$lp_add_scheme = static function ( $url ) {
 				$url = trim( (string) $url );
 				if ( '' !== $url && ! preg_match( '#^https?://#i', $url ) ) {

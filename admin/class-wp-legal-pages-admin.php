@@ -1993,6 +1993,11 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 		$lp_general['duration']		= $business_info['duration'] ?? '';
 		$lp_general['disclosing-party']	= $business_info['disclosingParty'] ?? '';
 		$lp_general['recipient-party']	= $business_info['recipientParty'] ?? '';
+		$lp_general['legal_form']		= sanitize_text_field( $business_info['legalForm'] ?? '' );
+		$lp_general['representatives']	= sanitize_text_field( $business_info['representatives'] ?? '' );
+		$lp_general['registration_no']	= sanitize_text_field( $business_info['registrationNo'] ?? '' );
+		$lp_general['reg_authority']	= sanitize_text_field( $business_info['regAuthority'] ?? '' );
+		$lp_general['vat_id']			= sanitize_text_field( $business_info['vatId'] ?? '' );
 
 		update_option( 'lp_general', $lp_general );
 
@@ -2281,24 +2286,31 @@ if ( ! class_exists( 'WP_Legal_Pages_Admin' ) ) {
 			$business_info = array();
 		}
         
-        $lp_general['domain']       = $business_info['domain'] ?? '';
-        $lp_general['business']     = $business_info['business'] ?? '';
-        $lp_general['trading']      = $business_info['trading'] ?? '';
-        $lp_general['phone']        = $business_info['phone'] ?? '';
-        $lp_general['street']       = $business_info['street'] ?? '';
-        $lp_general['cityState']    = $business_info['cityState'] ?? '';
-        $lp_general['country']      = $business_info['country'] ?? '';
-        $lp_general['email']        = $business_info['email'] ?? '';
-        $lp_general['address']      = $business_info['address'] ?? '';
-        $lp_general['facebook-url'] = $business_info['facebookUrl'] ?? '';
-        $lp_general['google-url']   = $business_info['googleUrl'] ?? '';
-        $lp_general['twitter-url']  = $business_info['twitterUrl'] ?? '';
-        $lp_general['linkedin-url'] = $business_info['linkedinUrl'] ?? '';
-        $lp_general['date']         = $business_info['date'] ?? '';
-        $lp_general['days']         = $business_info['days'] ?? '';
-        $lp_general['duration']     = $business_info['duration'] ?? '';
-        $lp_general['disclosing-party'] = $business_info['disclosingParty'] ?? '';
-        $lp_general['recipient-party']  = $business_info['recipientParty'] ?? '';
+        $business_key_map = array(
+            'domain'          => 'domain',
+            'business'        => 'business',
+            'trading'         => 'trading',
+            'phone'           => 'phone',
+            'street'          => 'street',
+            'cityState'       => 'cityState',
+            'country'         => 'country',
+            'email'           => 'email',
+            'address'         => 'address',
+            'facebookUrl'     => 'facebook-url',
+            'googleUrl'       => 'google-url',
+            'twitterUrl'      => 'twitter-url',
+            'linkedInUrl'     => 'linkedin-url',
+            'date'            => 'date',
+            'days'            => 'days',
+            'duration'        => 'duration',
+            'disclosingParty' => 'disclosing-party',
+            'recipientParty'  => 'recipient-party',
+        );
+        foreach ( $business_key_map as $request_key => $option_key ) {
+            if ( array_key_exists( $request_key, $business_info ) ) {
+                $lp_general[ $option_key ] = sanitize_text_field( (string) $business_info[ $request_key ] );
+            }
+        }
 
         update_option( 'lp_general', $lp_general );
 
